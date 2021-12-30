@@ -1,0 +1,5 @@
+pyramid~=2.0
+setuptools~=57.0.0
+numpy~=1.21.5
+matplotlib~=3.5.1
+Pillow~=8.4.0
