@@ -1,1 +1,1 @@
-$ echo "web: ./run" > Procfile
+web: ./run
