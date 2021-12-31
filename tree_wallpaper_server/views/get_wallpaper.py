@@ -8,12 +8,17 @@ from pyramid.view import view_config
 
 @view_config(route_name='get_wallpaper', renderer='json')
 def get_wallpaper(request):
+    print(request)
     screen_size_x = request.params.get('screen_size_x')
     screen_size_y = request.params.get('screen_size_y')
     inverse = request.params.get('inverse')
     if screen_size_x is None:
         screen_size_x = 1920 * 2
         screen_size_y = 1080 * 2
+    else:
+        screen_size_x = int(screen_size_x)
+        screen_size_y = int(screen_size_y)
+    print(inverse, screen_size_x, screen_size_y)
     if inverse is None:
         inverse = False
     image_file = GetFractalTreeWallpaper((screen_size_x, screen_size_y), inverse).get_wallpaper()
@@ -35,12 +40,13 @@ class GetFractalTreeWallpaper:
         self.null_alpha = pi / 2 + (random() - 0.5) / 5  # angle of main branch
         self.base_alpha = pi / randint(5, 10)
         self.null_l = screen_size[1] / randint(6, 8)  # length of main branch
-        self.null_point = (screen_size[0] / 2, screen_size[1] / 5 * 4) # begin point of main branch
-        self.full_n = 0 # initial number of branches
+        self.null_point = (screen_size[0] / 2, screen_size[1] / 5 * 4)  # begin point of main branch
+        self.full_n = 0  # initial number of branches
 
         self.wind_influence = random() / 3 + 0.84  # >1 main rotation in left side, <1 ... in right side
 
-        self.start_width = self.screen_size[0] * 0.004  # width of main branch
+        self.start_width = 80 + 20*(random()-0.5)  # width of main branch
+        print(self.start_width)
 
     def draw_branch(self, begin, end, alpha, width1, width2, n,
                     alpha_pre):  # begin - tuple (x, y), end - tuple (x, y), alpha - angle, width - int
@@ -87,7 +93,7 @@ class GetFractalTreeWallpaper:
                     self.branch((x1, y1), alpha + i * self.base_alpha * (random() / 5 + 1), n, alpha)
                 elif r < 0.51:  # probability of right branch
                     self.branch((x1, y1), alpha + i * self.base_alpha * (random() / 5 + 1), n, alpha)
-                elif r < 0.9:  # probability of left branch
+                elif r < 0.9 + (lambda: 0.11 if n < 7 else 0)():  # probability of left branch
                     self.branch((x1, y1), alpha - i * self.base_alpha * (random() / 5 + 1), n, alpha)
 
     def get_wallpaper(self):
