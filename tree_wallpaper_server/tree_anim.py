@@ -188,5 +188,5 @@ class Branch:
         self.n = n
 
 
-tree = Tree()
-tree.wind2gif()
+#tree = Tree()
+#tree.wind2gif()
